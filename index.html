@@ -36,6 +36,7 @@
       planet.loadPlugin(function(planet) {
         planet.onDraw(function () {
           planet.withSavedContext(function (context) {
+            context.strokeStyle = 'red';
             var arc = planet.plugins.topojson.world;
             context.beginPath();
             planet.path.context(context)(arc);
