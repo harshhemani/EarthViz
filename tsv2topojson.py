@@ -12,7 +12,7 @@ outfilepath = sys.argv[2]
 lines = open(tsvfilepath, 'r').readlines()
 
 result = {}
-result['type'] = 'LineString'
+result['type'] = 'MultiPoint'
 result['coordinates'] = []
 for line in lines:
     line = line.strip()

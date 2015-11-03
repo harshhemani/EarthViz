@@ -22,9 +22,11 @@
 
       planet.loadPlugin(
           planetaryjs.plugins.topojson({
-            file: './out.json'
+            file: './input.json'
           })
       );
+
+      planet.loadPlugin(planetaryjs.plugins.pings());
 
       planet.loadPlugin(planetaryjs.plugins.drag());
       planet.loadPlugin(
@@ -32,18 +34,25 @@
           scaleExtent: [200, 1000]
         })
       );
+      
 
       planet.loadPlugin(function(planet) {
-        planet.onDraw(function () {
-          planet.withSavedContext(function (context) {
-            context.strokeStyle = 'red';
-            var arc = planet.plugins.topojson.world;
-            context.beginPath();
-            planet.path.context(context)(arc);
-            context.stroke();
-            context.closePath();
-          });
-        });
+        var first_time = 1;
+        setInterval(function() {
+          var points = planet.plugins.topojson.world;
+          first_pt = points.coordinates[0];
+          lng = first_pt[0];
+          lat = first_pt[1];
+          if(first_time==1){
+            planet.projection.rotate([lng, lat, 0]);
+            first_time = 0;
+          }
+          planet.plugins.pings.add(lng, lat, {color: 'yellow', ttl: 1500, angle: 10});
+          for(var i=1; i<points.coordinates.length; i++){
+            var pt = points.coordinates[i];
+            planet.plugins.pings.add(pt[0], pt[1], { color: 'yellow', ttl: 1500, angle: 5 });
+          }
+        }, 1000)
       });
 
       planet.projection.scale(250).translate([250, 250]);
